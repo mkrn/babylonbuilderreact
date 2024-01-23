@@ -1,11 +1,28 @@
 import { useEffect, useState } from "react";
 import RecordButton from "./components/RecordButton";
+import "./Home.css";
+import { useParams, useNavigate } from "react-router-dom";
+import { useChannel } from "ably/react";
+import Results from "./components/Results";
 
 export default function Home() {
+  let { streamId } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!streamId) {
+      const randomStreamId = Math.random().toString(36).substring(2, 15);
+      navigate(`/${randomStreamId}`);
+    }
+  }, [streamId, navigate]);
+
+  const { channel } = useChannel(streamId);
+
   const [audioDevices, setAudioDevices] = useState([]);
+
+  const [transcription, setTranscription] = useState([]);
+
   const [selectedDevice, setSelectedDevice] = useState("");
-  const [finalTranscription, setFinalTranscription] = useState("");
-  const [partialTranscription, setPartialTranscription] = useState("");
 
   useEffect(() => {
     async function listAudioDevices() {
@@ -15,6 +32,12 @@ export default function Home() {
       }
 
       try {
+        // Request microphone permission before listing devices
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        stream.getTracks().forEach((track) => track.stop());
+
         const devices = await navigator.mediaDevices.enumerateDevices();
         const filteredDevices = devices.filter((d) => d.kind === "audioinput");
         setAudioDevices(filteredDevices);
@@ -32,33 +55,6 @@ export default function Home() {
 
   return (
     <>
-      <style>{`
-        body {
-          margin: 1rem;
-        }
-        form {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        form > div {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        form,
-        #result {
-          box-sizing: border-box;
-          max-width: 500px;
-          margin: 0 auto;
-        }
-        #result {
-          margin-top: 1rem;
-          border-top: 1px solid #333;
-          padding-top: 1rem;
-          text-align: justify;
-        }
-      `}</style>
       <form id="form">
         <div>
           {/* <label htmlFor="input_device">Audio input device</label> */}
@@ -77,36 +73,23 @@ export default function Home() {
             ))}
           </select>
         </div>
-        {/* <button
-          type="button"
-          onClick={isRecording ? stopRecording : startRecording}
-          style={{ color: isRecording ? "white" : "black" }}
-        >
-          {isRecording ? "Stop recording" : "Start recording"}
-        </button> */}
         <RecordButton
           selectedDevice={selectedDevice}
           onTranscriptionData={(data) => {
             console.log(data);
-            if (data.type === "final") {
-              setFinalTranscription((prev) => prev + data.transcription);
-              setPartialTranscription("");
-            } else {
-              setPartialTranscription(data.transcription);
-            }
+            channel.publish("transcription", data);
+            setTranscription((prev) => [...prev, data]); // append to the end
           }}
           onStart={() => {
-            setFinalTranscription("");
-            setPartialTranscription("...");
+            setTranscription([]);
           }}
         />
       </form>
 
-      <div id="result">
-        <span id="finals">{finalTranscription}</span>
-        <span style={{ color: "red" }} id="partials">
-          {partialTranscription}
-        </span>
+      <Results transcription={transcription} />
+
+      <div>
+        <a href={`/read/${streamId}`}>Share Link to Read</a>
       </div>
     </>
   );
