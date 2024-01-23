@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import RecordRTC from "recordrtc";
 
 const SAMPLE_RATE = 48000;
@@ -99,7 +99,7 @@ export default function RecordButton({
       console.error("Error during the initialization:", error);
       stopRecording();
     }
-  }, [selectedDevice, onTranscriptionData, stopRecording]);
+  }, [selectedDevice, onTranscriptionData, stopRecording, onStart]);
 
   return (
     <button

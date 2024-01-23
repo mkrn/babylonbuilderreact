@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState } from "react";
 import RecordButton from "./components/RecordButton";
 
 export default function Home() {
