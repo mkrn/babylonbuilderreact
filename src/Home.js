@@ -108,7 +108,6 @@ export default function Home() {
               value={selectedDevice}
               onChange={(e) => setSelectedDevice(e.target.value)}
               disabled={audioDevices.length === 0}
-              style={{ padding: 10, width: "100%" }}
             >
               {audioDevices.map((device) => (
                 <option key={device.deviceId} value={device.deviceId}>

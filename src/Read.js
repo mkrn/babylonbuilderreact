@@ -18,7 +18,11 @@ export default function Read() {
 
   return (
     <main>
-      <select value={language} onChange={handleLanguageChange}>
+      <select
+        value={language}
+        onChange={handleLanguageChange}
+        id="languageselect"
+      >
         <option value="">English</option>
         <option value="ru">Russian</option>
         <option value="az">Azerbanjani</option>

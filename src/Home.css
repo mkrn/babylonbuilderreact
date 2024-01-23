@@ -57,3 +57,15 @@ main {
 #sharelink {
   text-decoration: none;
 }
+
+select {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+#languageselect {
+  margin: 20px;
+  width: calc(100% - 40px);
+}

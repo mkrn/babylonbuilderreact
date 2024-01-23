@@ -113,7 +113,11 @@ export default function RecordButton({
     <button
       type="button"
       onClick={isRecording ? stopRecording : startRecording}
-      style={{ color: isRecording ? "red" : "black", padding: 20 }}
+      style={{
+        color: isRecording ? "red" : "black",
+        padding: 20,
+        WebkitAppearance: "none",
+      }}
     >
       {isRecording ? "🛑 Stop" : "🎤 Start"}
     </button>
