@@ -1,16 +1,45 @@
-body {
-  margin: 1rem;
+html,
+body,
+#root,
+main {
+  height: 100%;
 }
+
+/* body {
+  margin: 1rem;
+} */
 main {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-main > div {
+
+#toolbox {
+  flex: 0;
+  margin: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
+label {
+  margin: 10px 0;
+  display: block;
+}
+
+#translation_hint {
+  display: block;
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* main > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+} */
 main {
   box-sizing: border-box;
   max-width: 500px;
@@ -19,8 +48,12 @@ main {
 #result {
   width: 100%;
   box-sizing: border-box;
-  margin-top: 1rem;
-  border: 1px solid #333;
-  padding: 1rem;
+  font-size: 28px;
+  padding: 20px;
   text-align: justify;
+  flex: 1;
+}
+
+#sharelink {
+  text-decoration: none;
 }

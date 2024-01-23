@@ -98,64 +98,67 @@ export default function Home() {
   return (
     <>
       <main>
-        <div>
-          {/* <label htmlFor="input_device">Audio input device</label> */}
-          <select
-            id="input_device"
-            name="input_device"
-            required
-            value={selectedDevice}
-            onChange={(e) => setSelectedDevice(e.target.value)}
-            disabled={audioDevices.length === 0}
-          >
-            {audioDevices.map((device) => (
-              <option key={device.deviceId} value={device.deviceId}>
-                {device.label || "Default"}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="translation_hint">
-            Custom vocabulary to improve accuracy of transcribing context
-            specific words, technical terms, names, etc:
-          </label>
-          <textarea
-            id="translation_hint"
-            name="translation_hint"
-            value={translationHint}
-            onChange={handleTranslationHintChange}
-          />
-        </div>
-        <RecordButton
-          selectedDevice={selectedDevice}
-          translationHint={translationHint}
-          onTranscriptionData={onTranscriptionData}
-          onStart={() => {
-            setTranscription([]);
-          }}
-        />
-
-        <div style={{ textAlign: "center", marginTop: 20 }}>
-          <a
-            href={`/read/${streamId}`}
-            target="_blank"
-            rel="noreferrer"
-            onClick={(e) => {
-              if (navigator.canShare) {
-                e.preventDefault();
-                const shareData = {
-                  title: "Share Link to Read",
-                  url: window.location.origin + `/read/${streamId}`,
-                };
-                navigator.share(shareData).catch(console.error);
-              }
+        <div id="toolbox">
+          <div>
+            {/* <label htmlFor="input_device">Audio input device</label> */}
+            <select
+              id="input_device"
+              name="input_device"
+              required
+              value={selectedDevice}
+              onChange={(e) => setSelectedDevice(e.target.value)}
+              disabled={audioDevices.length === 0}
+              style={{ padding: 10, width: "100%" }}
+            >
+              {audioDevices.map((device) => (
+                <option key={device.deviceId} value={device.deviceId}>
+                  {device.label || "Default"}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="translation_hint">
+              Custom vocabulary to improve accuracy of transcribing context
+              specific words, technical terms, names, etc:
+            </label>
+            <textarea
+              id="translation_hint"
+              name="translation_hint"
+              value={translationHint}
+              onChange={handleTranslationHintChange}
+            />
+          </div>
+          <RecordButton
+            selectedDevice={selectedDevice}
+            translationHint={translationHint}
+            onTranscriptionData={onTranscriptionData}
+            onStart={() => {
+              setTranscription([]);
             }}
-          >
-            📤 Share Link to Read Subtitles
-          </a>
-        </div>
+          />
 
+          <div style={{ textAlign: "center", marginTop: 20 }}>
+            <a
+              href={`/read/${streamId}`}
+              target="_blank"
+              rel="noreferrer"
+              id="sharelink"
+              onClick={(e) => {
+                if (navigator.canShare) {
+                  e.preventDefault();
+                  const shareData = {
+                    title: "Share Link to Read",
+                    url: window.location.origin + `/read/${streamId}`,
+                  };
+                  navigator.share(shareData).catch(console.error);
+                }
+              }}
+            >
+              📤 Share Link to Read Subtitles
+            </a>
+          </div>
+        </div>
         <Results transcription={transcription} />
       </main>
     </>
