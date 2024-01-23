@@ -107,7 +107,7 @@ export default function RecordButton({
       onClick={isRecording ? stopRecording : startRecording}
       style={{ color: isRecording ? "red" : "black", padding: 20 }}
     >
-      {isRecording ? "Stop recording" : "Start recording"}
+      {isRecording ? "🛑 Stop Mic" : "🎤 Start Mic"}
     </button>
   );
 }

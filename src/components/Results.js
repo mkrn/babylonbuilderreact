@@ -1,4 +1,9 @@
 export default function Results({ transcription }) {
+  const lastElement = transcription[transcription.length - 1];
+  const partialTranscription =
+    lastElement && lastElement.type === "partial"
+      ? lastElement.transcription
+      : "";
   return (
     <div id="result">
       <span id="finals">
@@ -8,8 +13,7 @@ export default function Results({ transcription }) {
           .join(" ")}
       </span>
       <span style={{ color: "red" }} id="partials">
-        {transcription.filter((data) => data.type === "partial").slice(-1)[0]
-          ?.transcription || ""}
+        {partialTranscription}
       </span>
     </div>
   );

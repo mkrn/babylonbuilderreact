@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <>
-      <form id="form">
+      <main>
         <div>
           {/* <label htmlFor="input_device">Audio input device</label> */}
           <select
@@ -84,13 +84,29 @@ export default function Home() {
             setTranscription([]);
           }}
         />
-      </form>
 
-      <Results transcription={transcription} />
+        <Results transcription={transcription} />
 
-      <div>
-        <a href={`/read/${streamId}`}>Share Link to Read</a>
-      </div>
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          <a
+            href={`/read/${streamId}`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => {
+              if (navigator.canShare) {
+                e.preventDefault();
+                const shareData = {
+                  title: "Share Link to Read",
+                  url: window.location.origin + `/read/${streamId}`,
+                };
+                navigator.share(shareData).catch(console.error);
+              }
+            }}
+          >
+            📤 Share Link to Read Subtitles
+          </a>
+        </div>
+      </main>
     </>
   );
 }
