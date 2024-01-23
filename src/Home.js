@@ -9,6 +9,7 @@ export default function Home() {
   let { streamId } = useParams();
   const navigate = useNavigate();
 
+  // Create random channel and go there if not set (home page / visit)
   useEffect(() => {
     if (!streamId) {
       const randomStreamId = Math.random().toString(36).substring(2, 15);
@@ -17,11 +18,8 @@ export default function Home() {
   }, [streamId, navigate]);
 
   const { channel } = useChannel(streamId);
-
   const [audioDevices, setAudioDevices] = useState([]);
-
   const [transcription, setTranscription] = useState([]);
-
   const [selectedDevice, setSelectedDevice] = useState("");
 
   useEffect(() => {
@@ -53,6 +51,30 @@ export default function Home() {
     listAudioDevices();
   }, []);
 
+  const onTranscriptionData = async (data) => {
+    console.log(data);
+
+    // append to the end of results
+    setTranscription((prev) => [...prev, data]);
+
+    try {
+      // Translate data.transcription to Azerbanjani with Google Translate API
+      const response = await fetch(
+        `https://translation.googleapis.com/language/translate/v2?key=${
+          process.env.REACT_APP_GOOGLE_TRANSLATE_API_KEY
+        }&q=${encodeURI(data.transcription)}&target=az`
+      );
+      const translatedData = await response.json();
+      const translatedText = translatedData.data.translations[0].translatedText;
+      channel.publish("transcription", {
+        ...data,
+        transcription: translatedText,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <main>
@@ -75,11 +97,7 @@ export default function Home() {
         </div>
         <RecordButton
           selectedDevice={selectedDevice}
-          onTranscriptionData={(data) => {
-            console.log(data);
-            channel.publish("transcription", data);
-            setTranscription((prev) => [...prev, data]); // append to the end
-          }}
+          onTranscriptionData={onTranscriptionData}
           onStart={() => {
             setTranscription([]);
           }}

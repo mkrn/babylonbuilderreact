@@ -63,10 +63,13 @@ export default function RecordButton({
         const configuration = {
           x_gladia_key: GLADIA_KEY,
           frames_format: "bytes",
-          language_behaviour: "automatic single language",
+          // language_behaviour: "automatic single language",
+          language_behaviour: "manual",
+          language: "english",
+
+          reinject_context: true,
           model_type: "fast",
           prosody: false,
-          reinject_context: false,
           transcription_hint: "",
           word_timestamps: false,
           sample_rate: SAMPLE_RATE,
@@ -107,7 +110,7 @@ export default function RecordButton({
       onClick={isRecording ? stopRecording : startRecording}
       style={{ color: isRecording ? "red" : "black", padding: 20 }}
     >
-      {isRecording ? "🛑 Stop Mic" : "🎤 Start Mic"}
+      {isRecording ? "🛑 Stop" : "🎤 Start"}
     </button>
   );
 }
