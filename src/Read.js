@@ -5,14 +5,25 @@ import { useState } from "react";
 import "./Home.css";
 export default function Read() {
   let { streamId } = useParams();
-
   const [transcription, updateTranscription] = useState([]);
+  const [language, setLanguage] = useState("");
+
   useChannel(streamId, (message) => {
     updateTranscription((prev) => [...prev, message.data]);
   });
+
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
+
   return (
     <main>
-      <Results transcription={transcription} />
+      <select value={language} onChange={handleLanguageChange}>
+        <option value="">English</option>
+        <option value="ru">Russian</option>
+        <option value="az">Azerbanjani</option>
+      </select>
+      <Results transcription={transcription} language={language} />
     </main>
   );
 }

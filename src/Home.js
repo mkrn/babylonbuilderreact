@@ -51,28 +51,40 @@ export default function Home() {
     listAudioDevices();
   }, []);
 
-  const onTranscriptionData = async (data) => {
-    console.log(data);
-
-    // append to the end of results
-    setTranscription((prev) => [...prev, data]);
-
+  const translate = async (text, target) => {
     try {
       // Translate data.transcription to Azerbanjani with Google Translate API
       const response = await fetch(
         `https://translation.googleapis.com/language/translate/v2?key=${
           process.env.REACT_APP_GOOGLE_TRANSLATE_API_KEY
-        }&q=${encodeURI(data.transcription)}&target=az`
+        }&q=${encodeURI(text)}&target=${target}`
       );
       const translatedData = await response.json();
-      const translatedText = translatedData.data.translations[0].translatedText;
-      channel.publish("transcription", {
-        ...data,
-        transcription: translatedText,
-      });
+      return translatedData.data.translations[0].translatedText;
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const onTranscriptionData = async (data) => {
+    console.log(data);
+
+    // Translate to az and ru in parallel
+    const [translatedTextAz, translatedTextRu] = await Promise.all([
+      translate(data.transcription, "az"),
+      translate(data.transcription, "ru"),
+    ]);
+
+    const enrichedData = {
+      ...data,
+      transcription_az: translatedTextAz,
+      transcription_ru: translatedTextRu,
+    };
+
+    channel.publish("transcription", enrichedData);
+
+    // append to the end of results
+    setTranscription((prev) => [...prev, enrichedData]);
   };
 
   return (
