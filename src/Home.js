@@ -21,6 +21,9 @@ export default function Home() {
   const [audioDevices, setAudioDevices] = useState([]);
   const [transcription, setTranscription] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState("");
+  const [translationHint, setTranslationHint] = useState(
+    localStorage.getItem("translationHint") || ""
+  );
 
   useEffect(() => {
     async function listAudioDevices() {
@@ -87,6 +90,11 @@ export default function Home() {
     setTranscription((prev) => [...prev, enrichedData]);
   };
 
+  const handleTranslationHintChange = (e) => {
+    setTranslationHint(e.target.value);
+    localStorage.setItem("translationHint", e.target.value);
+  };
+
   return (
     <>
       <main>
@@ -107,15 +115,26 @@ export default function Home() {
             ))}
           </select>
         </div>
+        <div>
+          <label htmlFor="translation_hint">
+            Custom vocabulary to improve accuracy of transcribing context
+            specific words, technical terms, names, etc:
+          </label>
+          <textarea
+            id="translation_hint"
+            name="translation_hint"
+            value={translationHint}
+            onChange={handleTranslationHintChange}
+          />
+        </div>
         <RecordButton
           selectedDevice={selectedDevice}
+          translationHint={translationHint}
           onTranscriptionData={onTranscriptionData}
           onStart={() => {
             setTranscription([]);
           }}
         />
-
-        <Results transcription={transcription} />
 
         <div style={{ textAlign: "center", marginTop: 20 }}>
           <a
@@ -136,6 +155,8 @@ export default function Home() {
             📤 Share Link to Read Subtitles
           </a>
         </div>
+
+        <Results transcription={transcription} />
       </main>
     </>
   );

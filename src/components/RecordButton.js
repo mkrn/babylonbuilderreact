@@ -7,6 +7,7 @@ const GLADIA_KEY = process.env.REACT_APP_GLADIA_KEY;
 export default function RecordButton({
   selectedDevice,
   onTranscriptionData,
+  translationHint = "",
   onStart,
 }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -63,14 +64,12 @@ export default function RecordButton({
         const configuration = {
           x_gladia_key: GLADIA_KEY,
           frames_format: "bytes",
-          // language_behaviour: "automatic single language",
           language_behaviour: "manual",
           language: "english",
-
           reinject_context: true,
           model_type: "fast",
           prosody: false,
-          transcription_hint: "",
+          transcription_hint: translationHint, // Pass translationHint from props to socket
           word_timestamps: false,
           sample_rate: SAMPLE_RATE,
         };
@@ -102,7 +101,13 @@ export default function RecordButton({
       console.error("Error during the initialization:", error);
       stopRecording();
     }
-  }, [selectedDevice, onTranscriptionData, stopRecording, onStart]);
+  }, [
+    selectedDevice,
+    onTranscriptionData,
+    stopRecording,
+    onStart,
+    translationHint,
+  ]); // Add translationHint to the dependency array
 
   return (
     <button
