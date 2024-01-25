@@ -64,8 +64,8 @@ select {
   box-sizing: border-box;
   -webkit-appearance: none;
 }
-
+/* 
 #languageselect {
   margin: 20px;
   width: calc(100% - 40px);
-}
+} */

@@ -3,6 +3,8 @@ import { useChannel } from "ably/react";
 import Results from "./components/Results";
 import { useState } from "react";
 import "./Home.css";
+import { LanguageSelector } from "./components/LanguageSelector";
+
 export default function Read() {
   let { streamId } = useParams();
   const [transcription, updateTranscription] = useState([]);
@@ -12,21 +14,15 @@ export default function Read() {
     updateTranscription((prev) => [...prev, message.data]);
   });
 
-  const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
-  };
-
   return (
     <main>
-      <select
+      <LanguageSelector
         value={language}
-        onChange={handleLanguageChange}
-        id="languageselect"
-      >
-        <option value="">English</option>
-        <option value="ru">Russian</option>
-        <option value="az">Azerbanjani</option>
-      </select>
+        onChange={(event) => {
+          setLanguage(event.target.value);
+        }}
+      />
+
       <Results transcription={transcription} language={language} />
     </main>
   );

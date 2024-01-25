@@ -8,6 +8,7 @@ export default function RecordButton({
   selectedDevice,
   onTranscriptionData,
   translationHint = "",
+  inputlanguage = "english",
   onStart,
 }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -60,12 +61,20 @@ export default function RecordButton({
       const newSocket = new WebSocket(
         "wss://api.gladia.io/audio/text/audio-transcription"
       );
+
+      const languageMap = {
+        "": "english",
+        en: "english",
+        ru: "russian",
+        az: "azerbaijani",
+      };
+
       newSocket.onopen = () => {
         const configuration = {
           x_gladia_key: GLADIA_KEY,
           frames_format: "bytes",
           language_behaviour: "manual",
-          language: "english",
+          language: languageMap[inputlanguage || ""],
           reinject_context: true,
           model_type: "fast",
           prosody: false,
@@ -107,6 +116,7 @@ export default function RecordButton({
     stopRecording,
     onStart,
     translationHint,
+    inputlanguage,
   ]); // Add translationHint to the dependency array
 
   return (

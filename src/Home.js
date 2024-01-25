@@ -4,6 +4,7 @@ import "./Home.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useChannel } from "ably/react";
 import Results from "./components/Results";
+import { LanguageSelector } from "./components/LanguageSelector";
 
 export default function Home() {
   let { streamId } = useParams();
@@ -24,6 +25,9 @@ export default function Home() {
   const [translationHint, setTranslationHint] = useState(
     localStorage.getItem("translationHint") || ""
   );
+
+  const [inputlanguage, setinputlanguage] = useState("");
+  const [language, setLanguage] = useState("");
 
   useEffect(() => {
     async function listAudioDevices() {
@@ -117,6 +121,15 @@ export default function Home() {
             </select>
           </div>
           <div>
+            <label>Input Language:</label>
+            <LanguageSelector
+              value={inputlanguage}
+              onChange={(event) => {
+                setinputlanguage(event.target.value);
+              }}
+            />
+          </div>
+          <div>
             <label htmlFor="translation_hint">
               Custom vocabulary to improve accuracy of transcribing context
               specific words, technical terms, names, etc:
@@ -132,6 +145,7 @@ export default function Home() {
             selectedDevice={selectedDevice}
             translationHint={translationHint}
             onTranscriptionData={onTranscriptionData}
+            inputlanguage={inputlanguage}
             onStart={() => {
               setTranscription([]);
             }}
@@ -158,7 +172,14 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <Results transcription={transcription} />
+        <LanguageSelector
+          value={language}
+          onChange={(event) => {
+            setLanguage(event.target.value);
+          }}
+          style={{ margin: 20, width: "calc(100% - 40px)" }}
+        />
+        <Results transcription={transcription} language={language} />
       </main>
     </>
   );
