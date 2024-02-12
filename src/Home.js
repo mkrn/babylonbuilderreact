@@ -77,15 +77,18 @@ export default function Home() {
     console.log(data);
 
     // Translate to az and ru in parallel
-    const [translatedTextAz, translatedTextRu] = await Promise.all([
-      translate(data.transcription, "az"),
-      translate(data.transcription, "ru"),
-    ]);
+    const [translatedTextAz, translatedTextRu, translatedTextUz] =
+      await Promise.all([
+        translate(data.transcription, "az"),
+        translate(data.transcription, "ru"),
+        translate(data.transcription, "uz"),
+      ]);
 
     const enrichedData = {
       ...data,
       transcription_az: translatedTextAz,
       transcription_ru: translatedTextRu,
+      transcription_uz: translatedTextUz,
     };
 
     channel.publish("transcription", enrichedData);

@@ -4,6 +4,7 @@ export const LanguageSelector = ({ value, onChange, ...props }) => {
       <option value="">English</option>
       <option value="ru">Russian</option>
       <option value="az">Azerbanjani</option>
+      <option value="uz">Uzbek</option>
     </select>
   );
 };
